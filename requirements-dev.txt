@@ -1,0 +1,4 @@
+# Additional development dependencies
+pytest-asyncio>=0.23.0
+pytest-mock>=3.12.0
+ruff>=0.8.0
