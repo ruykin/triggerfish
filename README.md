@@ -1,22 +1,16 @@
 # Triggerfish LSP
 
-Lightning-fast LSP server powered by universal-ctags with smart trigger-based completions.
+Lightning-fast LSP server with smart trigger-based file completions.
 
 ## Features
 
-- `@` trigger for file completions with fuzzy search
-- Powered by universal-ctags for language-agnostic indexing
-- Works with Python, JavaScript, TypeScript, and any ctags-supported language
+- `@` trigger for file completions with fuzzy search in `.txt` files
+- Shows all project files (not just code files)
+- Automatic workspace indexing with intelligent directory filtering
 
 ## Requirements
 
 - Python 3.9+
-- universal-ctags
-
-### Installing universal-ctags
-
-Refer to the universal-ctags install docs for your OS:
-https://github.com/universal-ctags/ctags
 
 ## Installation
 
@@ -57,26 +51,40 @@ Example `settings.json` snippet:
 }
 ```
 
-### Neovim (nvim-lspconfig)
+### Neovim
 
 ```lua
-require('lspconfig').triggerfish.setup{
+-- Triggerfish LSP setup using vim.lsp.config
+vim.lsp.config.triggerfish = {
   cmd = { 'python', '-m', 'triggerfish' },
-  filetypes = { 'python', 'javascript', 'typescript' },
+  filetypes = { 'text' },  -- Only works in .txt files
+  root_markers = { '.git' },
 }
+
+-- Enable triggerfish for text files
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { 'text' },
+  callback = function()
+    vim.lsp.enable('triggerfish')
+  end,
+})
 ```
 
 ## Example
 
 ```
-# In any file, type:
+# In a .txt file, type:
 @myfi
 
-# Shows completions:
+# Shows completions for all matching files in your project:
 # - my_file.py
 # - my_first.js
 # - my_filter.ts
+# - my_file.md
+# - my_config.json
 ```
+
+Note: The `@` trigger only works in `.txt` files. This allows you to reference any file in your project from text documents without triggering completions in your code files.
 
 ## Development
 
@@ -104,7 +112,9 @@ pylint src/
 ## Troubleshooting
 
 - Logs location: `~/.triggerfish/logs/triggerfish.log`
-- Common issues: ctags not found, no completions appearing
+- Make sure you're in a `.txt` file when testing `@` completions
+- Check that the LSP client is configured with filetype `'text'`
+- Verify the server is running by checking `:LspInfo` in Neovim
 
 ## License
 
