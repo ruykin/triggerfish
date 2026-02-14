@@ -14,6 +14,7 @@ dependencies = [
     "pygls>=2.0.0,<3.0.0",
     "lsprotocol>=2025.0.0",
     "rapidfuzz>=3.14.0,<4.0.0",
+    "python-dotenv>=1.0.0",
 ]
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -42,7 +43,7 @@ dev = [
 triggerfish = "triggerfish.__main__:main"
 
 [tool.setuptools.packages.find]
-where = ["src"]
+where = ["."]
 
 [tool.black]
 line-length = 88
@@ -63,5 +64,5 @@ warn_unused_configs = true
 testpaths = ["tests"]
 python_files = "test_*.py"
 python_functions = "test_*"
-# addopts = "--cov=src/triggerfish --cov-report=html --cov-report=term"
+# addopts = "--cov=triggerfish --cov-report=html --cov-report=term"
 asyncio_mode = "auto"
