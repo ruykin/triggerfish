@@ -31,6 +31,27 @@ pip install -e .
 pip install triggerfish
 ```
 
+## Quick Start (VSCode)
+
+The fastest way to get started with VSCode:
+
+```bash
+# 1. Install Triggerfish
+pip install -e .
+
+# 2. Install extension dependencies
+cd .vscode/extensions/triggerfish-lsp
+npm install
+
+# 3. Open workspace in VSCode
+# The extension will auto-activate for .txt files
+
+# 4. Try it out in a .txt file:
+#    - Type @ to see file completions
+#    - Type . to see class completions
+#    - Type # to see method/function completions
+```
+
 ## Usage
 
 ```bash
@@ -45,9 +66,34 @@ python -m triggerfish --log-level DEBUG
 
 ### VSCode
 
-1. Install a generic LSP client extension like [vscode-lsp-client](https://marketplace.visualstudio.com/items?itemName=vscode-lsp-client)
+**Option 1: Use the Included Extension (Recommended)**
 
-2. Add to your `settings.json`:
+The repository includes a ready-to-use VSCode extension at `.vscode/extensions/triggerfish-lsp/`.
+
+1. Install dependencies:
+   ```bash
+   cd .vscode/extensions/triggerfish-lsp
+   npm install
+   ```
+
+2. Open the workspace in VSCode - the extension is automatically discovered
+
+3. The extension will automatically use `.venv/bin/python` if available, otherwise falls back to system `python`
+
+4. Open a `.txt` file and start using `@`, `.`, or `#` triggers
+
+To customize the Python path, add to your workspace settings (`.vscode/settings.json`):
+```json
+{
+  "triggerfish.pythonPath": "/path/to/your/python"
+}
+```
+
+**Option 2: Manual LSP Client Setup**
+
+Install a generic LSP client extension like [vscode-lsp-client](https://marketplace.visualstudio.com/items?itemName=vscode-lsp-client)
+
+Add to your `settings.json`:
 
 ```json
 {
@@ -62,9 +108,9 @@ python -m triggerfish --log-level DEBUG
 }
 ```
 
-Or create a custom extension:
+**Option 3: Create Your Own Extension**
 
-3. Create `.vscode/extensions/triggerfish/package.json`:
+Create `.vscode/extensions/triggerfish/package.json`:
 
 ```json
 {
@@ -99,7 +145,11 @@ let client;
 
 function activate(context) {
   const config = vscode.workspace.getConfiguration('triggerfish');
-  const pythonPath = config.get('pythonPath') || 'python';
+  const workspaceFolder = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+  const defaultPythonPath = workspaceFolder
+    ? `${workspaceFolder}/.venv/bin/python`
+    : 'python';
+  const pythonPath = config.get('pythonPath') || defaultPythonPath;
 
   const serverOptions = {
     command: pythonPath,
