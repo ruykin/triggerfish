@@ -138,6 +138,7 @@ celerybeat.pid
 .env
 .envrc
 .venv
+lsp/.venv/
 env/
 venv/
 ENV/
@@ -190,6 +191,14 @@ cython_debug/
 
 # Ruff stuff:
 .ruff_cache/
+
+# Go
+core/triggerfish-core
+*.exe
+
+# Nix
+result*
+.direnv/
 
 # PyPI configuration file
 .pypirc
